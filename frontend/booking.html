@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host3ls - Book Hostel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="animations.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #34d399;
+            --secondary-dark: #10b981;
+            --accent: #6ee7b7;
+            --accent-dark: #34d399;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --gradient-1: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-2: linear-gradient(135deg, var(--secondary), var(--accent));
+            --gradient-3: linear-gradient(135deg, var(--accent), var(--primary));
+            --gradient-4: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            caret-color: transparent !important;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='), auto !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(248, 250, 252, 0.7) 0%, 
+                rgba(226, 232, 240, 0.7) 25%,
+                rgba(241, 245, 249, 0.7) 50%,
+                rgba(226, 232, 240, 0.7) 75%,
+                rgba(248, 250, 252, 0.7) 100%);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .booking-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            padding: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .booking-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: var(--glass-bg);
+            color: var(--text);
+            font-size: 16px;
+            cursor: pointer !important;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer !important;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .submit-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .seth-symbol {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 2px 0;
+        }
+
+        .price-display {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 20px 0;
+            color: var(--text);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                padding: 20px;
+            }
+
+            .receipt {
+                padding: 20px;
+            }
+        }
+
+        /* Add receipt styles */
+        .receipt {
+            display: none;
+            background: white;
+            padding: 40px;
+            max-width: 800px;
+            margin: 20px auto;
+            border-radius: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #ccc;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .receipt-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .receipt-details {
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            transition: all 0.3s ease;
+        }
+
+        .receipt-row:hover {
+            background: rgba(16, 185, 129, 0.1);
+            transform: translateX(5px);
+        }
+
+        .receipt-label {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .receipt-value {
+            color: var(--text-light);
+        }
+
+        .receipt-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #ccc;
+        }
+
+        .print-btn {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .receipt, .receipt * {
+                visibility: visible;
+            }
+            .receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            .print-btn {
+                display: none;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--glass-border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease-out;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="hostels.html" class="logo">
+            <i class="fas fa-building"></i>
+            Host3ls
+        </a>
+    </div>
+
+    <div class="booking-container">
+        <h1 class="booking-title">Book Your Hostel</h1>
+        
+        <form id="bookingForm">
+            <div class="form-group">
+                <label for="hostelName">Hostel Name</label>
+                <input type="text" id="hostelName" name="hostelName" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="checkIn">Check-in Date</label>
+                <input type="date" id="checkIn" name="checkIn" required>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">Duration (in months)</label>
+                <select id="duration" name="duration" required>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12" selected>12 Months</option>
+                </select>
+            </div>
+
+            <div class="price-display">
+                Total Price: <span class="seth-symbol" id="totalPrice">0.00 sETH</span>
+            </div>
+
+            <button type="submit" class="submit-btn">Confirm Booking</button>
+        </form>
+    </div>
+
+    <!-- Add receipt template -->
+    <div id="receipt" class="receipt">
+        <div class="receipt-header">
+            <h2 class="receipt-title">Host3ls Booking Receipt</h2>
+            <p>Thank you for your booking!</p>
+        </div>
+        <div class="receipt-details">
+            <div class="receipt-row">
+                <span class="receipt-label">Booking ID:</span>
+                <span class="receipt-value" id="receipt-booking-id"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Hostel Name:</span>
+                <span class="receipt-value" id="receipt-hostel-name"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Full Name:</span>
+                <span class="receipt-value" id="receipt-full-name"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Email:</span>
+                <span class="receipt-value" id="receipt-email"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Phone:</span>
+                <span class="receipt-value" id="receipt-phone"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Check-in Date:</span>
+                <span class="receipt-value" id="receipt-checkin"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Duration:</span>
+                <span class="receipt-value" id="receipt-duration"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Amount Paid:</span>
+                <span class="receipt-value" id="receipt-amount"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Transaction Hash:</span>
+                <span class="receipt-value" id="receipt-tx-hash"></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Date:</span>
+                <span class="receipt-value" id="receipt-date"></span>
+            </div>
+        </div>
+        <div class="receipt-footer">
+            <p>This receipt serves as proof of your booking.</p>
+            <p>Please keep it for your records.</p>
+            <button onclick="printAndRedirect()" class="print-btn">Print Receipt</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script>
+        // Get hostel details from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const hostelName = urlParams.get('hostel');
+        const price = urlParams.get('price');
+
+        // Set hostel name and price
+        document.getElementById('hostelName').value = hostelName || 'Selected Hostel';
+        document.getElementById('totalPrice').textContent = `${price || '0.00'} sETH`;
+
+        // Sepolia Network Details
+        const SEPOLIA_CHAIN_ID = '0xaa36a7'; // 11155111 in hex
+
+        // MetaMask Integration
+        async function connectWallet() {
+            if (typeof window.ethereum === 'undefined') {
+                alert('Please install MetaMask to make payments');
+                return null;
+            }
+
+            try {
+                // Check if we're on Sepolia
+                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                if (chainId !== SEPOLIA_CHAIN_ID) {
+                    alert('Please switch to Sepolia network in MetaMask');
+                    return null;
+                }
+
+                // Request account access
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                if (accounts.length === 0) {
+                    alert('Please connect your MetaMask wallet to continue');
+                    return null;
+                }
+
+                return accounts[0];
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('Error connecting to MetaMask: ' + error.message);
+                return null;
+            }
+        }
+
+        async function makePayment(amount) {
+            try {
+                const account = await connectWallet();
+                if (!account) return null;
+
+                // Convert amount to Wei (18 decimals)
+                const amountInWei = ethers.utils.parseEther(amount.toString());
+
+                // Create transaction
+                const transactionParameters = {
+                    to: '0x0000000000000000000000000000000000000000', // Replace with your contract address
+                    from: account,
+                    value: amountInWei.toHexString(),
+                    gas: '0x5208', // 21000 gas
+                };
+
+                // Send transaction
+                const txHash = await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [transactionParameters],
+                });
+
+                return txHash;
+            } catch (error) {
+                console.error('Payment failed:', error);
+                if (error.code === 4001) {
+                    alert('Transaction was rejected by user');
+                } else {
+                    alert('Payment failed: ' + error.message);
+                }
+                return null;
+            }
+        }
+
+        // Generate a random booking ID
+        function generateBookingId() {
+            return 'BK' + Date.now().toString().slice(-6) + Math.random().toString(36).substr(2, 4).toUpperCase();
+        }
+
+        // Show receipt after successful payment
+        function showReceipt(txHash) {
+            const receipt = document.getElementById('receipt');
+            const form = document.getElementById('bookingForm');
+            
+            // Fill receipt details
+            document.getElementById('receipt-booking-id').textContent = generateBookingId();
+            document.getElementById('receipt-hostel-name').textContent = hostelName;
+            document.getElementById('receipt-full-name').textContent = form.fullName.value;
+            document.getElementById('receipt-email').textContent = form.email.value;
+            document.getElementById('receipt-phone').textContent = form.phone.value;
+            document.getElementById('receipt-checkin').textContent = form.checkIn.value;
+            document.getElementById('receipt-duration').textContent = form.duration.value + ' Months';
+            document.getElementById('receipt-amount').textContent = price + ' sETH';
+            document.getElementById('receipt-tx-hash').textContent = txHash;
+            document.getElementById('receipt-date').textContent = new Date().toLocaleString();
+
+            // Show receipt
+            receipt.style.display = 'block';
+            
+            // Scroll to receipt
+            receipt.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Function to handle print and redirect
+        function printAndRedirect() {
+            window.print();
+            // Wait for print dialog to close before redirecting
+            setTimeout(() => {
+                window.location.href = 'hostels.html';
+            }, 1000);
+        }
+
+        // Update form submission handler
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing Payment...';
+
+            try {
+                const txHash = await makePayment(price);
+                if (txHash) {
+                    showReceipt(txHash);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Confirm Booking';
+            }
+        });
+
+        // Check if MetaMask is installed and on correct network
+        window.addEventListener('load', async function() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+                    if (chainId !== SEPOLIA_CHAIN_ID) {
+                        alert('Please switch to Sepolia network in MetaMask');
+                    }
+                } catch (error) {
+                    console.error('Network check failed:', error);
+                }
+            } else {
+                alert('Please install MetaMask to make payments');
+            }
+        });
+
+        // Listen for network changes
+        if (window.ethereum) {
+            window.ethereum.on('chainChanged', (chainId) => {
+                if (chainId !== SEPOLIA_CHAIN_ID) {
+                    alert('Please switch to Sepolia network in MetaMask');
+                }
+            });
+
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    alert('Please connect your MetaMask wallet to continue');
+                }
+            });
+        }
+
+        // Hide cursor
+        document.addEventListener('DOMContentLoaded', function() {
+            document.documentElement.style.cursor = 'none';
+            
+            const allElements = document.getElementsByTagName('*');
+            for (let element of allElements) {
+                element.style.cursor = 'none';
+                element.style.caretColor = 'transparent';
+                element.style.userSelect = 'none';
+                element.style.webkitUserSelect = 'none';
+                element.style.mozUserSelect = 'none';
+                element.style.msUserSelect = 'none';
+            }
+
+            const interactiveElements = document.querySelectorAll('button, input, select');
+            interactiveElements.forEach(element => {
+                element.style.cursor = 'pointer';
+            });
+        });
+
+        // Additional cursor hiding on mouse movement
+        document.addEventListener('mousemove', function(e) {
+            const cursor = document.createElement('div');
+            cursor.style.position = 'fixed';
+            cursor.style.width = '0';
+            cursor.style.height = '0';
+            cursor.style.pointerEvents = 'none';
+            cursor.style.zIndex = '9999';
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            document.body.appendChild(cursor);
+            setTimeout(() => cursor.remove(), 0);
+        });
+    </script>
+</body>
+</html> 

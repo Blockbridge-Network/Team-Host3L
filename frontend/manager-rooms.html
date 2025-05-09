@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host3ls - Room Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="animations.css">
+    <style>
+        /* Reuse the same root variables and base styles from manager-dashboard.html */
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #34d399;
+            --secondary-dark: #10b981;
+            --accent: #6ee7b7;
+            --accent-dark: #34d399;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --gradient-1: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-2: linear-gradient(135deg, var(--secondary), var(--accent));
+            --gradient-3: linear-gradient(135deg, var(--accent), var(--primary));
+            --gradient-4: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(248, 250, 252, 0.7) 0%, 
+                rgba(226, 232, 240, 0.7) 25%,
+                rgba(241, 245, 249, 0.7) 50%,
+                rgba(226, 232, 240, 0.7) 75%,
+                rgba(248, 250, 252, 0.7) 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            border-radius: 12px;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--gradient-1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .main-content {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .room-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .room-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .room-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .status-occupied {
+            background: var(--primary);
+            color: white;
+        }
+
+        .status-maintenance {
+            background: var(--accent);
+            color: white;
+        }
+
+        .room-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .room-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .amenity-tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--glass-bg);
+            font-size: 12px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: var(--gradient-1);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .action-btn.secondary {
+            background: var(--glass-bg);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                Host3ls
+            </div>
+            <nav class="nav-menu">
+                <a href="manager-dashboard.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+                <a href="manager-bookings.html" class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    Bookings
+                </a>
+                <a href="manager-guests.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Guests
+                </a>
+                <a href="manager-rooms.html" class="nav-item active">
+                    <i class="fas fa-door-open"></i>
+                    Rooms
+                </a>
+                <a href="manager-reports.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Reports
+                </a>
+                <a href="manager-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Room Management</h1>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search rooms by number, type, or status...">
+            </div>
+
+            <div class="rooms-grid">
+                <!-- Room Card 1 -->
+                <div class="room-card">
+                    <div class="room-header">
+                        <div class="room-number">Room 101</div>
+                        <div class="room-status status-available">Available</div>
+                    </div>
+                    <div class="room-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Type</span>
+                            <span class="detail-value">Single</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Price</span>
+                            <span class="detail-value">0.1 sETH/night</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Floor</span>
+                            <span class="detail-value">1st</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Capacity</span>
+                            <span class="detail-value">1 Person</span>
+                        </div>
+                    </div>
+                    <div class="room-amenities">
+                        <span class="amenity-tag">
+                            <i class="fas fa-wifi"></i>
+                            WiFi
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-tv"></i>
+                            TV
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-snowflake"></i>
+                            AC
+                        </span>
+                    </div>
+                    <div class="room-actions">
+                        <button class="action-btn">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="action-btn secondary">
+                            <i class="fas fa-history"></i>
+                            History
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Room Card 2 -->
+                <div class="room-card">
+                    <div class="room-header">
+                        <div class="room-number">Room 203</div>
+                        <div class="room-status status-occupied">Occupied</div>
+                    </div>
+                    <div class="room-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Type</span>
+                            <span class="detail-value">Double</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Price</span>
+                            <span class="detail-value">0.15 sETH/night</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Floor</span>
+                            <span class="detail-value">2nd</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Capacity</span>
+                            <span class="detail-value">2 People</span>
+                        </div>
+                    </div>
+                    <div class="room-amenities">
+                        <span class="amenity-tag">
+                            <i class="fas fa-wifi"></i>
+                            WiFi
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-tv"></i>
+                            TV
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-snowflake"></i>
+                            AC
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-coffee"></i>
+                            Mini Bar
+                        </span>
+                    </div>
+                    <div class="room-actions">
+                        <button class="action-btn">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="action-btn secondary">
+                            <i class="fas fa-history"></i>
+                            History
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Room Card 3 -->
+                <div class="room-card">
+                    <div class="room-header">
+                        <div class="room-number">Room 305</div>
+                        <div class="room-status status-maintenance">Maintenance</div>
+                    </div>
+                    <div class="room-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Type</span>
+                            <span class="detail-value">Suite</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Price</span>
+                            <span class="detail-value">0.25 sETH/night</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Floor</span>
+                            <span class="detail-value">3rd</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Capacity</span>
+                            <span class="detail-value">4 People</span>
+                        </div>
+                    </div>
+                    <div class="room-amenities">
+                        <span class="amenity-tag">
+                            <i class="fas fa-wifi"></i>
+                            WiFi
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-tv"></i>
+                            TV
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-snowflake"></i>
+                            AC
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-coffee"></i>
+                            Mini Bar
+                        </span>
+                        <span class="amenity-tag">
+                            <i class="fas fa-hot-tub"></i>
+                            Jacuzzi
+                        </span>
+                    </div>
+                    <div class="room-actions">
+                        <button class="action-btn">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="action-btn secondary">
+                            <i class="fas fa-history"></i>
+                            History
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Add active class to current page
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                if (item.getAttribute('href') === currentPage) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const roomCards = document.querySelectorAll('.room-card');
+
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+
+                roomCards.forEach(card => {
+                    const roomNumber = card.querySelector('.room-number').textContent.toLowerCase();
+                    const roomType = card.querySelector('.detail-value').textContent.toLowerCase();
+                    const roomStatus = card.querySelector('.room-status').textContent.toLowerCase();
+
+                    if (roomNumber.includes(searchTerm) || 
+                        roomType.includes(searchTerm) || 
+                        roomStatus.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

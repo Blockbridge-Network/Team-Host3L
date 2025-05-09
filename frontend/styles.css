@@ -1,0 +1,187 @@
+:root {
+  /* Primary Colors */
+  --primary: #8A2BE2;  /* Bright Purple */
+  --primary-dark: #6A1B9A;
+  --secondary: #9C27B0;
+  --accent: #E1BEE7;
+  
+  /* Background Colors */
+  --background: #F3E5F5;
+  --card-bg: #FFFFFF;
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  
+  /* Text Colors */
+  --text: #333333;
+  --text-light: #666666;
+  --text-white: #FFFFFF;
+  
+  /* Border Colors */
+  --border: rgba(138, 43, 226, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  
+  /* Shadow */
+  --shadow-sm: 0 2px 8px rgba(138, 43, 226, 0.1);
+  --shadow-md: 0 4px 12px rgba(138, 43, 226, 0.15);
+  --shadow-lg: 0 8px 24px rgba(138, 43, 226, 0.2);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #8A2BE2, #9C27B0);
+  --gradient-secondary: linear-gradient(135deg, #9C27B0, #E1BEE7);
+  --gradient-wave: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+}
+
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Card Styles */
+.card {
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: var(--gradient-wave);
+  z-index: 1;
+  border-radius: 0 0 24px 24px;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid var(--border);
+  border-radius: 50px;
+  background: var(--glass-bg);
+  font-size: 1rem;
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-light);
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  background: var(--gradient-primary);
+  color: var(--text-white);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: var(--shadow-md);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Icons */
+.icon {
+  color: var(--primary);
+  margin-right: 0.5rem;
+}
+
+/* Wave Animation */
+.wave-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  overflow: hidden;
+}
+
+.wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-wave);
+  border-radius: 0 0 24px 24px;
+}
+
+/* Glassmorphism */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes waveAnimation {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-25%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .form-input {
+    padding: 0.8rem 1.2rem;
+  }
+  
+  .btn {
+    padding: 0.8rem 1.5rem;
+  }
+} 

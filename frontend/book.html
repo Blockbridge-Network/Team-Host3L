@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Hostel</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      padding: 30px;
+    }
+
+    h2 {
+      color: #2a5c8b;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    form input, form select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: #2a5c8b;
+      color: white;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #1e4568;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      text-align: center;
+      width: 100%;
+      color: #2a5c8b;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Book Your Room</h2>
+    <form id="bookingForm">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="checkinDate">Check-in Date</label>
+      <input type="date" id="checkinDate" name="checkinDate" required />
+
+      <label for="duration">Duration (in months)</label>
+      <input type="number" id="duration" name="duration" min="1" max="12" required />
+
+      <label for="roomType">Room Type</label>
+      <select id="roomType" name="roomType" required>
+        <option value="">--Select Room Type--</option>
+        <option value="single">One in a room</option>
+        <option value="double">Two in a room</option>
+        <option value="shared">Three in a room</option>
+      </select>
+
+      <button type="submit" class="btn">Pay GHS 50 to Reserve</button>
+    </form>
+
+    <a href="listings.html" class="back-link">← Back to Listings</a>
+  </div>
+
+  <script>
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+       // Placeholder for payment logic (can use Web3 later)
+       const confirmed = confirm("Proceed to pay GHS 50 allocation fee?");
+      if (confirmed) {
+        // Save user data temporarily (in future, send to blockchain or backend)
+        const bookingDetails = {
+          name: document.getElementById("fullName").value,
+          email: document.getElementById("email").value,
+          roomType: document.getElementById("roomType").value,
+        };
+
+        // Simulate payment and redirect
+        alert("Payment of GHS 50 successful!");
+        // Redirect to step 2
+        window.location.href = "final-payment.html";
+      }
+      // In future, call smart contract function to create booking here
+
+    });
+  </script>
+</body>
+</html>

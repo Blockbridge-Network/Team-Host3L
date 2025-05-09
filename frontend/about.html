@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About - Host3l Connect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #8A2BE2;
+      --primary-dark: #6A1B9A;
+      --secondary: #9C27B0;
+      --accent: #E1BEE7;
+      --background: #F3E5F5;
+      --text: #333333;
+      --text-light: #666666;
+      --card-bg: #FFFFFF;
+      --glass-bg: rgba(255, 255, 255, 0.9);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --gradient-primary: linear-gradient(135deg, #8A2BE2, #9C27B0);
+      --gradient-secondary: linear-gradient(135deg, #9C27B0, #E1BEE7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo i {
+      font-size: 28px;
+    }
+
+    nav {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      transition: all 0.3s;
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
+
+    nav a:not(.btn):hover {
+      color: var(--primary);
+      background: var(--glass-bg);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      background: var(--gradient-primary);
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+    }
+
+    .about-container {
+      max-width: 1200px;
+      margin: 120px auto 60px;
+      padding: 0 20px;
+    }
+
+    .about-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .about-header h1 {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-header p {
+      font-size: 20px;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .about-content {
+      display: grid;
+      gap: 40px;
+    }
+
+    .about-section {
+      background: var(--glass-bg);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .about-section:hover {
+      transform: translateY(-5px);
+    }
+
+    .about-section h2 {
+      font-size: 28px;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .about-section p {
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .about-section ul {
+      list-style: none;
+      margin-left: 20px;
+    }
+
+    .about-section li {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .about-section li i {
+      color: var(--primary);
+    }
+
+    .team-members {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .team-member {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+    }
+
+    .team-member:hover {
+      transform: translateY(-5px);
+    }
+
+    .team-member h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .team-member p {
+      color: var(--text-light);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      background: var(--glass-bg);
+      color: var(--text-light);
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+      }
+
+      .about-container {
+        margin-top: 100px;
+        padding: 0 20px;
+      }
+
+      .about-header h1 {
+        font-size: 32px;
+      }
+
+      .about-header p {
+        font-size: 18px;
+      }
+
+      .about-section {
+        padding: 30px;
+      }
+
+      .team-members {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="home.html" class="logo">
+      <i class="fas fa-home"></i>
+      HOST3L
+    </a>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="login.html">Log In</a>
+      <a href="signup.html" class="btn">Sign Up</a>
+    </nav>
+  </header>
+
+  <main class="about-container">
+    <div class="about-header">
+      <h1>About Host3l Connect</h1>
+      <p>Revolutionizing the way students find their perfect hostel accommodation since 2025</p>
+    </div>
+
+    <div class="about-content">
+      <section class="about-section">
+        <h2>Our Story</h2>
+        <p>Founded in 2025, Host3l Connect was created by three visionary students who experienced firsthand the challenges of finding quality hostel accommodations. What began as a campus project has transformed into a trusted platform connecting thousands of students with their ideal living spaces.</p>
+        <p>Our mission is to simplify the hostel search process, making it transparent, efficient, and stress-free for students while helping hostel owners effectively showcase their properties.</p>
+      </section>
+
+      <section class="about-section">
+        <h2>How We Help</h2>
+        <ul>
+          <li><i class="fas fa-check-circle"></i> <strong>Verified listings:</strong> Every hostel is personally vetted by our team</li>
+          <li><i class="fas fa-check-circle"></i> <strong>Smart matching:</strong> Our algorithm suggests hostels based on your preferences</li>
+          <li><i class="fas fa-check-circle"></i> <strong>Transparent pricing:</strong> No hidden fees or surprise charges</li>
+          <li><i class="fas fa-check-circle"></i> <strong>24/7 support:</strong> Dedicated team available whenever you need assistance</li>
+          <li><i class="fas fa-check-circle"></i> <strong>Student discounts:</strong> Exclusive deals for verified students</li>
+        </ul>
+      </section>
+
+      <section class="about-section">
+        <h2>Our Founders</h2>
+        <p>Host3l Connect was founded by three innovative students who transformed their own accommodation struggles into this solution:</p>
+        
+        <div class="team-members">
+          <div class="team-member">
+            <h3>Gali Nufus</h3>
+            <p>Chief Executive Officer</p>
+          </div>
+          <div class="team-member">
+            <h3>Yeslord Frimpong</h3>
+            <p>Chief Technology Officer</p>
+          </div>
+          <div class="team-member">
+            <h3>Prince Sylvanus Dalmeida</h3>
+            <p>Chief Operations Officer</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Host3l Connect. All rights reserved.
+  </footer>
+
+  <script>
+    // Smooth page transitions
+    document.querySelectorAll('a[href*=".html"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (this.href && this.href.includes('.html')) {
+          e.preventDefault();
+          document.body.style.opacity = '0';
+          setTimeout(() => {
+            window.location.href = this.href;
+          }, 300);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host3ls - Bookings Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #34d399;
+            --secondary-dark: #10b981;
+            --accent: #6ee7b7;
+            --accent-dark: #34d399;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --gradient-1: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-2: linear-gradient(135deg, var(--secondary), var(--accent));
+            --gradient-3: linear-gradient(135deg, var(--accent), var(--primary));
+            --gradient-4: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            caret-color: transparent !important;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='), auto !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(248, 250, 252, 0.7) 0%, 
+                rgba(226, 232, 240, 0.7) 25%,
+                rgba(241, 245, 249, 0.7) 50%,
+                rgba(226, 232, 240, 0.7) 75%,
+                rgba(248, 250, 252, 0.7) 100%);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            border-radius: 12px;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .main-content {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-text {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            background: var(--gradient-1);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .bookings-table {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            padding: 20px;
+            background: var(--gradient-1);
+            color: white;
+            font-weight: 600;
+        }
+
+        .booking-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .booking-row:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .booking-row:last-child {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .status-confirmed {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .status-pending {
+            background: var(--accent);
+            color: white;
+        }
+
+        .status-cancelled {
+            background: var(--pink);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-icon {
+            padding: 8px;
+            border-radius: 8px;
+            background: var(--glass-bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-icon:hover {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .table-header, .booking-row {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .table-header > div:nth-child(n+4),
+            .booking-row > div:nth-child(n+4) {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                Host3ls
+            </div>
+            <nav class="nav-menu">
+                <a href="manager-dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="manager-bookings.html" class="nav-item active">
+                    <i class="fas fa-calendar-alt"></i>
+                    Bookings
+                </a>
+                <a href="manager-guests.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Guests
+                </a>
+                <a href="manager-rooms.html" class="nav-item">
+                    <i class="fas fa-bed"></i>
+                    Rooms
+                </a>
+                <a href="manager-reports.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    Reports
+                </a>
+                <a href="manager-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h1 class="welcome-text">Bookings Management</h1>
+                <button class="action-btn" onclick="window.location.href='booking.html'">
+                    <i class="fas fa-plus"></i>
+                    New Booking
+                </button>
+            </div>
+
+            <div class="bookings-table">
+                <div class="table-header">
+                    <div>Guest</div>
+                    <div>Room</div>
+                    <div>Check-in</div>
+                    <div>Check-out</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                </div>
+
+                <div class="booking-row">
+                    <div>John Doe</div>
+                    <div>Room 101</div>
+                    <div>2024-03-15</div>
+                    <div>2024-03-17</div>
+                    <div><span class="status-badge status-confirmed">Confirmed</span></div>
+                    <div class="action-buttons">
+                        <i class="fas fa-edit action-icon"></i>
+                        <i class="fas fa-trash action-icon"></i>
+                    </div>
+                </div>
+
+                <div class="booking-row">
+                    <div>Jane Smith</div>
+                    <div>Room 203</div>
+                    <div>2024-03-16</div>
+                    <div>2024-03-19</div>
+                    <div><span class="status-badge status-pending">Pending</span></div>
+                    <div class="action-buttons">
+                        <i class="fas fa-edit action-icon"></i>
+                        <i class="fas fa-trash action-icon"></i>
+                    </div>
+                </div>
+
+                <div class="booking-row">
+                    <div>Mike Johnson</div>
+                    <div>Room 305</div>
+                    <div>2024-03-14</div>
+                    <div>2024-03-15</div>
+                    <div><span class="status-badge status-cancelled">Cancelled</span></div>
+                    <div class="action-buttons">
+                        <i class="fas fa-edit action-icon"></i>
+                        <i class="fas fa-trash action-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Add click handlers for navigation items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add click handlers for action icons
+        document.querySelectorAll('.action-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                const action = this.classList.contains('fa-edit') ? 'edit' : 'delete';
+                const row = this.closest('.booking-row');
+                const guestName = row.querySelector('div:first-child').textContent;
+                
+                if (action === 'edit') {
+                    alert(`Edit booking for ${guestName}`);
+                } else {
+                    if (confirm(`Are you sure you want to delete the booking for ${guestName}?`)) {
+                        row.remove();
+                    }
+                }
+            });
+        });
+
+        // Hide cursor
+        document.addEventListener('DOMContentLoaded', function() {
+            document.documentElement.style.cursor = 'none';
+            
+            const allElements = document.getElementsByTagName('*');
+            for (let element of allElements) {
+                element.style.cursor = 'none';
+                element.style.caretColor = 'transparent';
+                element.style.userSelect = 'none';
+                element.style.webkitUserSelect = 'none';
+                element.style.mozUserSelect = 'none';
+                element.style.msUserSelect = 'none';
+            }
+
+            const interactiveElements = document.querySelectorAll('.nav-item, .action-btn, .action-icon');
+            interactiveElements.forEach(element => {
+                element.style.cursor = 'pointer';
+            });
+        });
+
+        // Additional cursor hiding on mouse movement
+        document.addEventListener('mousemove', function(e) {
+            const cursor = document.createElement('div');
+            cursor.style.position = 'fixed';
+            cursor.style.width = '0';
+            cursor.style.height = '0';
+            cursor.style.pointerEvents = 'none';
+            cursor.style.zIndex = '9999';
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            document.body.appendChild(cursor);
+            setTimeout(() => cursor.remove(), 0);
+        });
+    </script>
+</body>
+</html> 

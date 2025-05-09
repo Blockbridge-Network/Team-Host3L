@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host3ls - KNUST Hostels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="animations.css">
+    <!-- Add Google Maps API with required libraries -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places,geometry&callback=initMap" async defer></script>
+    <script src="js/map.js"></script>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #34d399;
+            --secondary-dark: #10b981;
+            --accent: #6ee7b7;
+            --accent-dark: #34d399;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --gradient-1: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-2: linear-gradient(135deg, var(--secondary), var(--accent));
+            --gradient-3: linear-gradient(135deg, var(--accent), var(--primary));
+            --gradient-4: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            caret-color: transparent !important;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='), auto !important;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(248, 250, 252, 0.7) 0%, 
+                rgba(226, 232, 240, 0.7) 25%,
+                rgba(241, 245, 249, 0.7) 50%,
+                rgba(226, 232, 240, 0.7) 75%,
+                rgba(248, 250, 252, 0.7) 100%);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: var(--glass-bg);
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hostels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .hostel-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .hostel-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .hostel-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .hostel-card:hover .hostel-image {
+            transform: scale(1.05);
+        }
+
+        .hostel-info {
+            padding: 20px;
+        }
+
+        .hostel-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .hostel-location {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hostel-amenities {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .amenity {
+            background: var(--gradient-1);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .amenity:hover {
+            transform: scale(1.1);
+        }
+
+        .hostel-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .seth-symbol {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 2px 0;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer !important;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .book-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .book-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: var(--gradient-1);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .loading::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--glass-border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: none;
+                margin: 15px 0;
+            }
+
+            .hostels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        #map-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        #map-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--glass-border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        #map-loading p {
+            color: var(--text);
+            font-size: 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fas fa-home"></i>
+            Host3ls
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search hostels..." onkeyup="searchLocations(this.value)">
+        </div>
+        <div class="user-menu">
+            <a href="hostelNFT.html" class="btn btn-secondary" style="
+                padding: 12px 24px;
+                background: var(--gradient-2);
+                color: white;
+                border: none;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            ">
+                <i class="fas fa-coins"></i>
+                Invest in Hostels
+            </a>
+            <button class="btn btn-primary">Connect Wallet</button>
+        </div>
+    </div>
+
+    <!-- Map Container with Loading State -->
+    <div class="map-container">
+        <div id="map"></div>
+        <div id="map-loading" class="loading">
+            <div class="spinner"></div>
+            <p>Loading map...</p>
+        </div>
+    </div>
+
+    <div class="hostels-grid">
+        <!-- KNUST Hostels -->
+        <div class="hostel-card" data-hostel-id="1">
+            <img src="https://lh3.googleusercontent.com/p/AF1QipN15SLJqC7wQnEeD7Gty_s5y6TTVJAFv3exw9ck=s1360-w1360-h1020-rw" alt="Unity Hall" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Lienda Ville Hostel</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> KNUST Campus</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">24/7 Security</span>
+                    <span class="amenity">Laundry</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0008 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Unity%20Hall&price=0.0008" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <div class="hostel-card" data-hostel-id="2">
+            <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4noluLmmVkdgBN_Silulg3qDaqyequRb9pXcxiU0fNRz0RxXrnlUe5zzoVvly3qGu-J6V5_8dn15a9ctR8Fo9Ez5tCj9_HOJmXvPyNIMReevJvVHiXPHApU9Z19Fh95VslwhTxVf2A=s1360-w1360-h1020-rw" alt="Republic Hall" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Republic Hall</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> KNUST Campus</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">24/7 Security</span>
+                    <span class="amenity">Study Room</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0006 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Republic%20Hall&price=0.0006" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <div class="hostel-card" data-hostel-id="3">
+            <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4noTdppVJQ9dCeHkLGCXzJCY_sv0zF27u5OQrablQwL69v5rCL5JIPblq23k-VJMTzMyd3Jsu1Ap5G8r3mHiQdjhfAFChIvcgCvO3Vb7Y5g21vV7RKN7q0Dk1Di7ChnouZCSbOvP=s1360-w1360-h1020-rw" alt="Queen's Hall" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Queen's Hall</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> KNUST Campus</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">24/7 Security</span>
+                    <span class="amenity">Gym</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0007 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Queen%27s%20Hall&price=0.0007" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Ayeduase Hostels -->
+        <div class="hostel-card">
+            <img src="images\WhatsApp Image 2025-05-04 at 10.23.15_6d5cf02d.jpg" alt="Student Lodge" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Gaza</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> Ayeduase</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">Security</span>
+                    <span class="amenity">Kitchen</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0004 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Student%20Lodge&price=0.0004" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <div class="hostel-card">
+            <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4nr2fz8LPXbcoWkZjw10yMPLT7ZE5DR4bUqtfk_LlRDSzt6QFM-Qea7Ydn3zE6aB3E05FajpRqpUHwDyYV1yqvu2piXMZNryqnTY8Ujtlq2vy1FFTVcxX2CEYEmLl3DvtIWx48o=s1360-w1360-h1020-rw" alt="Campus View" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Unity Hall</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> Ayeduase</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">Security</span>
+                    <span class="amenity">Parking</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0005 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Campus%20View&price=0.0005" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Kotei Hostels -->
+        <div class="hostel-card">
+            <img src="https://lh3.googleusercontent.com/p/AF1QipNKwoZKljDbB5QIWKZGJcpYfMJ000XxPhXcM87V=s1360-w1360-h1020-rw" alt="Kotei Heights" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">University Hall</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> Kotei</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">Security</span>
+                    <span class="amenity">Pool</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0007 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Kotei%20Heights&price=0.0007" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Bomso Hostels -->
+        <div class="hostel-card">
+            <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4nonp8_SP89jz49WvtF_xSP7gD0LYlPjfAiHJKZJzLXyS2QfS2kO0KANLtyvPSi6YmpkdbHDjcc685R7KBTvOHNFazTiiShnQfPaPiZUh5ghRbew3Nyo-DCQZkWroxqozNv8Ml7L7Q=s1360-w1360-h1020-rw" alt="Bomso Residences" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Chancellor's Hall</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> Bomso</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">Security</span>
+                    <span class="amenity">Garden</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0006 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Bomso%20Residences&price=0.0006" class="book-btn">Book Now</a>
+            </div>
+        </div>
+
+        <!-- Ayigya Hostels -->
+        <div class="hostel-card">
+            <img src="https://lh3.googleusercontent.com/gps-cs-s/AC9h4noohOgkInHBjq5bdlCJ1GmfOiICwNshqtqQ24sGbb41gJiFtfyJ1m8s9fE3evdEqMQ8xu12itLcVCSUaQgmSoRrP_7P-niDdbWfA8s-4T259TGMafcBXnEF2Z_ugr5efaiPo3aC=w243-h203-n-k-no-nu" alt="Ayigya Suites" class="hostel-image">
+            <div class="hostel-info">
+                <h3 class="hostel-name">Wilkado Hostel</h3>
+                <p class="hostel-location"><i class="fas fa-map-marker-alt"></i> Ayigya</p>
+                <div class="hostel-amenities">
+                    <span class="amenity">WiFi</span>
+                    <span class="amenity">Security</span>
+                    <span class="amenity">Gym</span>
+                </div>
+                <div class="hostel-price">
+                    <span class="seth-symbol">0.0008 sETH</span>/year
+                </div>
+                <a href="booking.html?hostel=Ayigya%20Suites&price=0.0008" class="book-btn">Book Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add this at the beginning of your script
+        window.addEventListener('load', function() {
+            // Hide loading state when map is ready
+            if (typeof google !== 'undefined' && google.maps) {
+                document.getElementById('map-loading').style.display = 'none';
+            }
+        });
+
+        // Add error handling for map loading
+        window.gm_authFailure = function() {
+            const mapContainer = document.getElementById('map');
+            const loadingElement = document.getElementById('map-loading');
+            mapContainer.innerHTML = '<div class="error-message">Error loading map. Please check your API key.</div>';
+            loadingElement.style.display = 'none';
+        };
+
+        // Add scroll to filters function
+        function scrollToFilters() {
+            const filtersSection = document.getElementById('filters');
+            filtersSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-bar input');
+        const hostelCards = document.querySelectorAll('.hostel-card');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            hostelCards.forEach(card => {
+                const name = card.querySelector('.hostel-name').textContent.toLowerCase();
+                const location = card.querySelector('.hostel-location').textContent.toLowerCase();
+                const amenities = Array.from(card.querySelectorAll('.amenity'))
+                    .map(amenity => amenity.textContent.toLowerCase());
+                
+                const isVisible = name.includes(searchTerm) || 
+                                location.includes(searchTerm) || 
+                                amenities.some(amenity => amenity.includes(searchTerm));
+                
+                card.style.display = isVisible ? 'block' : 'none';
+            });
+        });
+
+        // Hide cursor
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide cursor on the entire document
+            document.documentElement.style.cursor = 'none';
+            
+            // Hide cursor on all elements
+            const allElements = document.getElementsByTagName('*');
+            for (let element of allElements) {
+                element.style.cursor = 'none';
+                element.style.caretColor = 'transparent';
+                element.style.userSelect = 'none';
+                element.style.webkitUserSelect = 'none';
+                element.style.mozUserSelect = 'none';
+                element.style.msUserSelect = 'none';
+            }
+
+            // Show pointer cursor only on interactive elements
+            const interactiveElements = document.querySelectorAll('.book-btn, .search-bar input');
+            interactiveElements.forEach(element => {
+                element.style.cursor = 'pointer';
+            });
+        });
+
+        // Additional cursor hiding on mouse movement
+        document.addEventListener('mousemove', function(e) {
+            const cursor = document.createElement('div');
+            cursor.style.position = 'fixed';
+            cursor.style.width = '0';
+            cursor.style.height = '0';
+            cursor.style.pointerEvents = 'none';
+            cursor.style.zIndex = '9999';
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            document.body.appendChild(cursor);
+            setTimeout(() => cursor.remove(), 0);
+        });
+    </script>
+</body>
+</html>

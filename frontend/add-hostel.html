@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add New Hostel</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f4f8;
+      padding: 20px;
+    }
+    .form-container {
+      background: #fff;
+      padding: 40px;
+      max-width: 700px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2a5c8b;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+    }
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 6px;
+    }
+    .custom-facilities {
+      margin-top: 10px;
+    }
+    .custom-facilities ul {
+      list-style: disc;
+      padding-left: 20px;
+      margin-top: 10px;
+    }
+    button, .add-btn {
+      margin-top: 20px;
+      background-color: #2a5c8b;
+      color: white;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .add-btn {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+    button:hover, .add-btn:hover {
+      background-color: #1e4568;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h1>Add New Hostel</h1>
+    <form id="addHostelForm">
+      <label for="hostelName">Hostel Name</label>
+      <input type="text" id="hostelName" name="hostelName" required>
+
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" required>
+
+      <label for="totalRooms">Total Number of Rooms</label>
+      <input type="number" id="totalRooms" name="totalRooms" required>
+
+      <label>Room Types & Prices (GHS)</label>
+      <label for="price1inRoom">One in a Room</label>
+      <input type="number" id="price1inRoom" name="price1inRoom" placeholder="e.g., 1200">
+
+      <label for="price2inRoom">Two in a Room</label>
+      <input type="number" id="price2inRoom" name="price2inRoom" placeholder="e.g., 1000">
+
+      <label for="price3inRoom">Three in a Room</label>
+      <input type="number" id="price3inRoom" name="price3inRoom" placeholder="e.g., 800">
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" placeholder="Describe the hostel..."></textarea>
+
+      <label for="hostelImage">Upload Hostel Image</label>
+      <input type="file" id="hostelImage" name="hostelImage" accept="image/*">
+
+      <label>Facilities</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="facilities" value="Wi-Fi"> Wi-Fi</label>
+        <label><input type="checkbox" name="facilities" value="Water"> Water</label>
+        <label><input type="checkbox" name="facilities" value="Electricity"> Electricity</label>
+        <label><input type="checkbox" name="facilities" value="Study Room"> Study Room</label>
+        <label><input type="checkbox" name="facilities" value="Private Bathroom"> Private Bathroom</label>
+        <label><input type="checkbox" name="facilities" value="Kitchen Access"> Kitchen Access</label>
+        <label><input type="checkbox" name="facilities" value="Security"> Security</label>
+        <label><input type="checkbox" name="facilities" value="Air Conditioning"> Air Conditioning</label>
+      </div>
+
+      <label for="customFacility">Add Custom Facility</label>
+      <input type="text" id="customFacility" placeholder="e.g., Laundry service">
+      <button type="button" class="add-btn" onclick="addCustomFacility()">Add</button>
+
+      <div class="custom-facilities">
+        <ul id="customFacilityList"></ul>
+      </div>
+
+      <button type="submit">Add Hostel</button>
+    </form>
+  </div>
+
+  <script>
+    const customFacilityList = document.getElementById("customFacilityList");
+    const customFacilityInput = document.getElementById("customFacility");
+
+    function addCustomFacility() {
+      const value = customFacilityInput.value.trim();
+      if (value !== "") {
+        const li = document.createElement("li");
+        li.textContent = value;
+
+        // Add a hidden input to store the value on form submission
+        const hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = "customFacilities[]";
+        hiddenInput.value = value;
+        li.appendChild(hiddenInput);
+
+        customFacilityList.appendChild(li);
+        customFacilityInput.value = "";
+      }
+    }
+
+    document.getElementById("addHostelForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // You can now gather all data, including checkboxes and custom facilities
+      const formData = new FormData(this);
+      alert("Hostel added successfully. (form data captured)");
+      this.reset();
+      customFacilityList.innerHTML = "";
+    });
+  </script>
+
+</body>
+</html>

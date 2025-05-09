@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Host3ls - Manage Hostels</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="animations.css">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #34d399;
+            --secondary-dark: #10b981;
+            --accent: #6ee7b7;
+            --accent-dark: #34d399;
+            --background: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: rgba(0, 0, 0, 0.1);
+            --gradient-1: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-2: linear-gradient(135deg, var(--secondary), var(--accent));
+            --gradient-3: linear-gradient(135deg, var(--accent), var(--primary));
+            --gradient-4: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(248, 250, 252, 0.7) 0%, 
+                rgba(226, 232, 240, 0.7) 25%,
+                rgba(241, 245, 249, 0.7) 50%,
+                rgba(226, 232, 240, 0.7) 75%,
+                rgba(248, 250, 252, 0.7) 100%);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            border-radius: 12px;
+            color: var(--text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--gradient-1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .main-content {
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .add-hostel-btn {
+            padding: 12px 24px;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .add-hostel-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .add-hostel-btn:hover::before {
+            left: 100%;
+        }
+
+        .add-hostel-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-hostel-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .hostels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .hostel-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .hostel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .hostel-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .hostel-content {
+            padding: 20px;
+        }
+
+        .hostel-name {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .hostel-location {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .hostel-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .amenity-tag {
+            padding: 5px 10px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .hostel-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .hostel-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0);
+            transition: transform 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .action-btn:hover::after {
+            transform: scale(1);
+        }
+
+        .edit-btn {
+            background: var(--glass-bg);
+            color: var(--text);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .edit-btn:hover {
+            background: var(--gradient-1);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+        }
+
+        .delete-btn:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--glass-border);
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: text;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+            background: white;
+        }
+
+        .image-upload {
+            border: 2px dashed var(--glass-border);
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-upload::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .image-upload:hover::before {
+            transform: translateX(100%);
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
+        }
+
+        .amenity-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid var(--glass-border);
+        }
+
+        .amenity-checkbox:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .amenity-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .amenity-checkbox input[type="checkbox"]:checked {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+
+            .hostels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Add focus styles for better accessibility */
+        *:focus {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* Add active state styles */
+        .action-btn:active,
+        .submit-btn:active,
+        .close-modal:active {
+            transform: scale(0.98);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: var(--glass-bg);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .empty-state p {
+            color: var(--text-light);
+        }
+
+        .image-preview {
+            margin-top: 10px;
+        }
+
+        .image-preview img {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast i {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-home"></i>
+                Host3ls
+            </div>
+            <nav class="nav-menu">
+                <a href="manager-dashboard.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    Dashboard
+                </a>
+                <a href="manager-bookings.html" class="nav-item">
+                    <i class="fas fa-calendar-check"></i>
+                    Bookings
+                </a>
+                <a href="manager-guests.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Guests
+                </a>
+                <a href="manager-rooms.html" class="nav-item">
+                    <i class="fas fa-door-open"></i>
+                    Rooms
+                </a>
+                <a href="manager-hostels.html" class="nav-item active">
+                    <i class="fas fa-building"></i>
+                    Hostels
+                </a>
+                <a href="manager-reports.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    Reports
+                </a>
+                <a href="manager-settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="about.html" class="nav-item">
+                    <i class="fas fa-info-circle"></i>
+                    About
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <div class="welcome-section">
+                    <h1 class="page-title">Manage Hostels</h1>
+                    <p class="welcome-text">Welcome, <span id="managerName"></span></p>
+                </div>
+                <button class="add-hostel-btn" onclick="openAddHostelModal()">
+                    <i class="fas fa-plus"></i>
+                    Add New Hostel
+                </button>
+            </div>
+
+            <div class="hostels-grid" id="hostelsGrid">
+                <!-- Hostels will be populated here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Hostel Modal -->
+    <div class="modal" id="hostelModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add New Hostel</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="hostelForm" onsubmit="handleHostelSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Hostel Name</label>
+                    <input type="text" class="form-input" id="hostelName" required>
+                    <div class="error-message" id="nameError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" id="location" required>
+                    <div class="error-message" id="locationError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price per Night (sETH)</label>
+                    <input type="number" class="form-input" id="price" step="0.01" min="0" required>
+                    <div class="error-message" id="priceError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-input" id="description" rows="4" required></textarea>
+                    <div class="error-message" id="descriptionError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amenities</label>
+                    <div class="amenities-grid">
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="WiFi"> WiFi
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="TV"> TV
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="AC"> AC
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="Kitchen"> Kitchen
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="Laundry"> Laundry
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="Parking"> Parking
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="Security"> Security
+                        </label>
+                        <label class="amenity-checkbox">
+                            <input type="checkbox" name="amenities" value="Pool"> Pool
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hostel Images</label>
+                    <div class="image-upload" onclick="document.getElementById('imageUpload').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload images</p>
+                        <input type="file" id="imageUpload" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+                <button type="submit" class="submit-btn">Save Hostel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let editingHostelId = null;
+
+        // Check authentication on page load
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const managerData = JSON.parse(localStorage.getItem('managerData') || '{}');
+            
+            if (!isLoggedIn || !managerData.role === 'manager') {
+                window.location.href = 'manager-login.html';
+                return;
+            }
+
+            // Update manager name
+            document.getElementById('managerName').textContent = managerData.fullName;
+
+            // Load hostels
+            loadHostels();
+        });
+
+        function loadHostels() {
+            const hostels = JSON.parse(localStorage.getItem('hostels') || '[]');
+            const managerData = JSON.parse(localStorage.getItem('managerData') || '{}');
+            
+            // Filter hostels for current manager
+            const managerHostels = hostels.filter(hostel => hostel.managerId === managerData.email);
+            
+            const hostelsGrid = document.getElementById('hostelsGrid');
+            hostelsGrid.innerHTML = '';
+
+            if (managerHostels.length === 0) {
+                hostelsGrid.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-building"></i>
+                        <h3>No Hostels Added Yet</h3>
+                        <p>Click the "Add New Hostel" button to add your first hostel.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort hostels by creation date (newest first)
+            managerHostels.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            managerHostels.forEach((hostel, index) => {
+                const hostelCard = createHostelCard(hostel);
+                hostelCard.style.animationDelay = `${index * 0.1}s`;
+                hostelsGrid.appendChild(hostelCard);
+            });
+        }
+
+        function createHostelCard(hostel) {
+            const card = document.createElement('div');
+            card.className = 'hostel-card';
+            card.style.animation = 'slideIn 0.5s ease-out forwards';
+            card.innerHTML = `
+                <img src="${hostel.image || 'https://source.unsplash.com/random/400x300/?hostel'}" alt="${hostel.name}" class="hostel-image">
+                <div class="hostel-content">
+                    <h3 class="hostel-name">${hostel.name}</h3>
+                    <p class="hostel-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${hostel.location}
+                    </p>
+                    <div class="hostel-amenities">
+                        ${hostel.amenities.map(amenity => `
+                            <span class="amenity-tag">${amenity}</span>
+                        `).join('')}
+                    </div>
+                    <div class="hostel-price">${hostel.price} sETH/night</div>
+                    <div class="hostel-actions">
+                        <button class="action-btn edit-btn" onclick="editHostel(${hostel.id})">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteHostel(${hostel.id})">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function openAddHostelModal() {
+            editingHostelId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Hostel';
+            document.getElementById('hostelForm').reset();
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('hostelModal').style.display = 'block';
+        }
+
+        function editHostel(id) {
+            const hostels = JSON.parse(localStorage.getItem('hostels') || '[]');
+            const hostel = hostels.find(h => h.id === id);
+            
+            if (hostel) {
+                editingHostelId = id;
+                document.getElementById('modalTitle').textContent = 'Edit Hostel';
+                document.getElementById('hostelName').value = hostel.name;
+                document.getElementById('location').value = hostel.location;
+                document.getElementById('price').value = hostel.price;
+                document.getElementById('description').value = hostel.description;
+                
+                // Check amenities
+                document.querySelectorAll('.amenity-checkbox input').forEach(checkbox => {
+                    checkbox.checked = hostel.amenities.includes(checkbox.value);
+                });
+                
+                // Show image preview if exists
+                if (hostel.image) {
+                    document.getElementById('imagePreview').innerHTML = `
+                        <img src="${hostel.image}" alt="${hostel.name}" style="max-width: 200px; margin-top: 10px;">
+                    `;
+                }
+                
+                document.getElementById('hostelModal').style.display = 'block';
+            }
+        }
+
+        function handleHostelSubmit(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const hostelName = document.getElementById('hostelName').value;
+            const location = document.getElementById('location').value;
+            const price = document.getElementById('price').value;
+            const description = document.getElementById('description').value;
+            const amenities = Array.from(document.querySelectorAll('.amenity-checkbox input:checked')).map(cb => cb.value);
+            
+            // Get manager data
+            const managerData = JSON.parse(localStorage.getItem('managerData') || '{}');
+            
+            // Get existing hostels
+            const hostels = JSON.parse(localStorage.getItem('hostels') || '[]');
+            
+            if (editingHostelId) {
+                // Update existing hostel
+                const index = hostels.findIndex(h => h.id === editingHostelId);
+                if (index !== -1) {
+                    hostels[index] = {
+                        ...hostels[index],
+                        name: hostelName,
+                        location: location,
+                        price: price,
+                        description: description,
+                        amenities: amenities,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+            } else {
+                // Add new hostel
+                const newHostel = {
+                    id: Date.now(),
+                    name: hostelName,
+                    location: location,
+                    price: price,
+                    description: description,
+                    amenities: amenities,
+                    managerId: managerData.email,
+                    managerName: managerData.fullName,
+                    createdAt: new Date().toISOString(),
+                    image: document.getElementById('imagePreview').querySelector('img')?.src || null
+                };
+                hostels.push(newHostel);
+            }
+            
+            // Save updated hostels
+            localStorage.setItem('hostels', JSON.stringify(hostels));
+            
+            // Show success message
+            showToast(editingHostelId ? 'Hostel updated successfully!' : 'Hostel added successfully!');
+            
+            // Close modal
+            closeModal();
+            
+            // Refresh hostel list with animation
+            const hostelsGrid = document.getElementById('hostelsGrid');
+            hostelsGrid.style.opacity = '0';
+            setTimeout(() => {
+                loadHostels();
+                hostelsGrid.style.opacity = '1';
+            }, 300);
+        }
+
+        function deleteHostel(id) {
+            if (confirm('Are you sure you want to delete this hostel?')) {
+                const hostels = JSON.parse(localStorage.getItem('hostels') || '[]');
+                const updatedHostels = hostels.filter(h => h.id !== id);
+                localStorage.setItem('hostels', JSON.stringify(updatedHostels));
+                
+                showToast('Hostel deleted successfully!');
+                loadHostels();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('hostelModal').style.display = 'none';
+            editingHostelId = null;
+        }
+
+        // Handle image upload preview
+        document.getElementById('imageUpload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" style="max-width: 200px; margin-top: 10px;">
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Add toast notification function
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 
