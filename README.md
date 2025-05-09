@@ -1,12 +1,14 @@
 # Team-Host3L
 
 ## Overview
-Brief summary of what the DApp does and who it’s for. Especially the problem it solving
+This project aims to make booking for rooms at hostels easier for students/users. It also makes
+management of hostels easier for hostel managers. The project also provides a platform where users can make money
+through the hostel NFT platform, enlisting hostels as NFTs and users being able to invest in the nfts by buying tokens.
 
 ## Features
 - ✅ Smart contract lending
-- ✅ Credit scoring with SBT
-- ✅ Token-gated content access
+- ✅ Token investments
+- ✅ Web 3 based verification
 
 ## Project Structure
 - `contracts/`: Smart contracts (written in Solidity via Remix)
@@ -39,8 +41,9 @@ Brief summary of what the DApp does and who it’s for. Especially the problem i
 [Watch here](./videos/demo.mp4)
 
 ## Authors
-- Jane Doe (Frontend)
-- John Smith (Solidity)
+- Yeslord Frimpong (Frontend)
+- Prince Sylvanus Dalmeida (Solidity)
+- Gali Nufus (UI/UX)
 
 ## 📄 License
 MIT or GPL-3.0
