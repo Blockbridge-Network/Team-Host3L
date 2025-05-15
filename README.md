@@ -32,7 +32,7 @@ through the hostel NFT platform, enlisting hostels as NFTs and users being able 
 ## Contracts
 | Contract | Address | Network |
 |----------|---------|---------|
-| HostelNFT.sol | 0x... | Sonic Testnet |
+| HostelNFT.sol | 0xD7f9cE94149C2d8b5Cab8839BECc54a81e1EB718 | Sonic Testnet |
 
 ## 📸 Screenshots
 ![Screenshot 1](./images/screenshot-1.png)
