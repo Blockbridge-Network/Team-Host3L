@@ -32,13 +32,13 @@ through the hostel NFT platform, enlisting hostels as NFTs and users being able 
 ## Contracts
 | Contract | Address | Network |
 |----------|---------|---------|
-| ExampleLoan.sol | 0x... | Sonic Testnet |
+| HostelNFT.sol | 0x... | Sonic Testnet |
 
 ## 📸 Screenshots
 ![Screenshot 1](./images/screenshot-1.png)
 
-## 🎥 Demo Video
-[Watch here](./videos/demo.mp4)
+## 🎥 Demo Videos
+[Watch here](./videos/)
 
 ## Authors
 - Yeslord Frimpong (Frontend)
