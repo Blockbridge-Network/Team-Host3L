@@ -38,7 +38,7 @@ through the hostel NFT platform, enlisting hostels as NFTs and users being able 
 ![Screenshot 1](./images/)
 
 ## 🎥 Demo Videos
-[Watch here](./videos/)
+[Watch here](https://youtube.com/playlist?list=PL06beYy8YPPKayuYuLkkKA_n1SL0xDJI9&si=3mgls7BbpiJ2F8Sq)
 
 ## Authors
 - Yeslord Frimpong (Frontend)
