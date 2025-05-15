@@ -35,7 +35,7 @@ through the hostel NFT platform, enlisting hostels as NFTs and users being able 
 | HostelNFT.sol | 0xD7f9cE94149C2d8b5Cab8839BECc54a81e1EB718 | Sonic Testnet |
 
 ## 📸 Screenshots
-![Screenshot 1](./images/screenshot-1.png)
+![Screenshot 1](./images/)
 
 ## 🎥 Demo Videos
 [Watch here](./videos/)
