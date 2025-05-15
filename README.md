@@ -26,8 +26,7 @@ through the hostel NFT platform, enlisting hostels as NFTs and users being able 
 
 ## How to Run Locally
 1. Clone the repo  
-2. `cd frontend && npm install`  
-3. `npm run dev`
+2. run home.html in a development server  
 
 ## Contracts
 | Contract | Address | Network |
